@@ -12,4 +12,5 @@ It attempts to emphasise readability of code over performance, and won't win any
 ## Utah Teapot
 ![Utah Teapot](https://github.com/chrisglencross/raytrace/blob/master/teapot.jpg)
 
-https://en.wikipedia.org/wiki/Utah_teapot
+* [Utah Teapot - Wikipedia](https://en.wikipedia.org/wiki/Utah_teapot)
+* Model downloaded from [http://goanna.cs.rmit.edu.au/~epknowles/models.html](http://goanna.cs.rmit.edu.au/~epknowles/models.html).
