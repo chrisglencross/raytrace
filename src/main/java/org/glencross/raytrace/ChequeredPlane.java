@@ -49,7 +49,7 @@ public class ChequeredPlane implements Shape {
         double x = intersection.minus(pointOnPlane).dotProduct(planeVector1);
         double y = intersection.minus(pointOnPlane).dotProduct(planeVector2);
         int total = (int)((10000+x)/chequerSize) + (int)((10000+y)/chequerSize);
-        return Collections.singletonList(new LineShapeIntersection(this, distance,
+        return Collections.singletonList(new LineShapeIntersection(line, this, distance,
                 intersection,
                 surfaceNormal, (total % 2) == 0 ? surfaceProperties2 : surfaceProperties1));
 

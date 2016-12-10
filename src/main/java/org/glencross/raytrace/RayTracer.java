@@ -2,7 +2,6 @@ package org.glencross.raytrace;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Optional;
@@ -13,9 +12,9 @@ import java.util.stream.IntStream;
  */
 public class RayTracer {
 
-    private Scene scene;
-    private int width;
-    private int height;
+    private final Scene scene;
+    private final int width;
+    private final int height;
 
     public RayTracer(Scene scene, int pxWidth, int pxHeight) {
         this.scene = scene;
@@ -74,11 +73,23 @@ public class RayTracer {
         Colour reflectedIllumination = Colour.BLACK;
         double reflectivity = intersection.getSurfaceProperties().getReflectivity();
         if (depthRemaining > 0 && reflectivity > 0) {
-            Line reflectionLine = new Line(intersection.getLocation(), intersection.getSurfaceNormal());
+            Vector surfaceNormal = intersection.getSurfaceNormal();
+            Vector lineDirection = intersection.getLine().getDirection();
+            Vector reflectionDirection = getReflectionDirection(surfaceNormal, lineDirection);
+
+            Line reflectionLine = new Line(intersection.getLocation(), reflectionDirection);
             reflectedIllumination = getColourOfLine(intersection.getShape(), reflectionLine, depthRemaining - 1)
                     .times(reflectivity);
         }
         return reflectedIllumination;
+    }
+
+    private static Vector getReflectionDirection(Vector surfaceNormal, Vector lineDirection) {
+        // Shapes can return a surface normal pointing inwards or outwards. We want the one pointing in.
+        if (surfaceNormal.dotProduct(lineDirection) > 0) {
+            surfaceNormal = Vector.ZERO.minus(surfaceNormal);
+        }
+        return lineDirection.minus(surfaceNormal.mult(2*(lineDirection.dotProduct(surfaceNormal))));
     }
 
     private Colour getAmbientIllumination(LineShapeIntersection intersection) {

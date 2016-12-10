@@ -16,7 +16,7 @@ public class TeapotPicture {
         builder.setViewerLocation(new Vector(0, 300, -800));
         builder.setDistanceFromScreen(300);
         builder.setViewerDirection(new Vector(0, -0.1, 1).toUnit());
-        builder.setAmbientLight(new Colour(0, 0,0));
+        builder.setAmbientLight(new Colour(0.1, 0.1, 0.1));
         builder.setLightSources(Arrays.asList(
                 new LightSource( Colour.WHITE, new Vector(300, 300, -300), new Vector(-1, -1, 1).toUnit()),
                 new LightSource( Colour.GREY, new Vector(-300, 300, -300), new Vector(-1, -1, -1).toUnit())
@@ -40,9 +40,9 @@ public class TeapotPicture {
         builder.setFogFactor(0.05);
         Scene scene = builder.createScene();
 
-        RayTracer rayTracer = new RayTracer(scene, 200, 150);
+        RayTracer rayTracer = new RayTracer(scene, 800, 600);
         RenderedImage image = rayTracer.render();
-        ImageIO.write(image, "JPEG", new File("output.jpg"));
+        ImageIO.write(image, "JPEG", new File("teapot.jpg"));
 
     }
 

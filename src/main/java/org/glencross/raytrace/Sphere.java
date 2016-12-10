@@ -2,12 +2,8 @@ package org.glencross.raytrace;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
 
 public class Sphere implements Shape {
 
@@ -41,7 +37,7 @@ public class Sphere implements Shape {
                 .mapToObj(distance -> {
                     Vector location = o.plus(l.mult(distance));
                     Vector surfaceNormal = location.minus(centre).toUnit();
-                    return new LineShapeIntersection(this, distance, location, surfaceNormal, surfaceProperties);
+                    return new LineShapeIntersection(line, this, distance, location, surfaceNormal, surfaceProperties);
                 })
                 .collect(Collectors.toList());
 

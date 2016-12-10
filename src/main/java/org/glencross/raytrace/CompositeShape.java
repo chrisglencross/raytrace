@@ -16,7 +16,7 @@ public class CompositeShape implements Shape {
         // TODO - would be nice to use some bounding box algorithm here!
         return components.stream()
                 .flatMap(c -> c.intersections(line).stream())
-                .map(i -> new LineShapeIntersection(this,  i.getDistance(), i.getLocation(),
+                .map(i -> new LineShapeIntersection(line, this,  i.getDistance(), i.getLocation(),
                         i.getSurfaceNormal(), i.getSurfaceProperties()))
                 .collect(Collectors.toList());
     }

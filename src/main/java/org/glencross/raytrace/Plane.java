@@ -36,7 +36,7 @@ public class Plane implements Shape {
             return Collections.emptyList();
         }
         Vector intersection = line.getOrigin().plus(line.getDirection().mult(distance));
-        return Collections.singletonList(new LineShapeIntersection(this, distance,
+        return Collections.singletonList(new LineShapeIntersection(line, this, distance,
                 intersection,
                 surfaceNormal, surfaceProperties));
 

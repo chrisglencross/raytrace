@@ -10,6 +10,7 @@ public class Colour {
     public static final Colour BLUE = new Colour(0, 0, 1);
     public static final Colour CYAN = new Colour(0, 1, 1);
     public static final Colour YELLOW = new Colour(1, 1, 0);
+    public static final Colour ORANGE = new Colour(1, 153d/256, 0);
 
 
     private double r;
@@ -49,6 +50,9 @@ public class Colour {
     }
 
     public Colour add(Colour other) {
-        return new Colour(other.r+r, other.g+g, other.b+b);
+        return new Colour(
+                Math.min(1, other.r+this.r),
+                Math.min(1, other.g+this.g),
+                Math.min(1, other.b+this.b));
     }
 }
