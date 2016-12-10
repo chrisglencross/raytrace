@@ -1,4 +1,4 @@
-# Toy Ray-Tracer
+# Toy Ray Tracer
 
 "Ray Tracing like it's 1993."
 
