@@ -27,7 +27,7 @@ public class TeapotPicture {
                 new Vector(0,0,0),
                 400,
                 new Surface(Colour.GREY, 0.9));
-        CompositeShape teapot = new CompositeShape(teapotComponents);
+        Shape teapot = new CompositeShape(teapotComponents);
 
         builder.setShapes(Arrays.asList(
                 teapot,

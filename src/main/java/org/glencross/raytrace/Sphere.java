@@ -10,13 +10,19 @@ public class Sphere implements Shape {
     private final Vector centre;
     private final double radius;
     private final Surface surfaceProperties;
+    private final BoundingBox boundingBox;
 
     public Sphere(Vector centre, double radius, Surface surfaceProperties) {
         this.centre = centre;
         this.radius = radius;
         this.surfaceProperties = surfaceProperties;
+        this.boundingBox = new BoundingBox(
+                new Vector(centre.getX()-radius, centre.getY()-radius, centre.getZ()-radius),
+                new Vector(centre.getX()+radius, centre.getY()+radius, centre.getZ()+radius)
+        );
     }
 
+    @Override
     public List<LineShapeIntersection> intersections(Line line) {
 
         Vector l = line.getDirection();
@@ -41,5 +47,10 @@ public class Sphere implements Shape {
                 })
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 }

@@ -24,6 +24,8 @@ public class RayTracer {
 
     public RenderedImage render() {
 
+        long startTimeMillis = System.currentTimeMillis();
+
         double horizontalFieldOfViewDegrees = 60; // Could make this a property of the scene?
         double verticalFieldOfViewDegrees = horizontalFieldOfViewDegrees / width * height;
 
@@ -45,6 +47,11 @@ public class RayTracer {
             });
             System.out.println(new BigDecimal(100d*y/height).setScale(2, BigDecimal.ROUND_HALF_UP) + "%");
         });
+
+
+        long endTimeMillis = System.currentTimeMillis();
+
+        System.out.println("Rendering took " + (endTimeMillis - startTimeMillis) + " milliseconds");
 
         return image;
     }

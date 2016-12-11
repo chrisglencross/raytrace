@@ -14,6 +14,7 @@ public class Triangle implements Shape {
     private final Vector cp3p2;
     private final Vector cp1p3;
 
+    private final BoundingBox boundingBox;
 
     public Triangle(Vector p1, Vector p2, Vector p3, Surface surface) {
         this.p1 = p1;
@@ -32,6 +33,9 @@ public class Triangle implements Shape {
         cp3p2 = p2.minus(p3).crossProduct(normal);
         cp1p3 = p3.minus(p1).crossProduct(normal);
 
+        this.boundingBox = new BoundingBox(p1, p1)
+                .combine(new BoundingBox(p2, p2))
+                .combine(new BoundingBox(p3, p3));
     }
 
     @Override
@@ -52,6 +56,11 @@ public class Triangle implements Shape {
     private boolean gtZero(double value)  {
         // Compensate for rounding errors in calculations which result in ugly gaps between adjacent triangles
         return value >= -0.00001;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
     public String toString() {
