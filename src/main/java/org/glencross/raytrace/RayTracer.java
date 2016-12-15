@@ -110,9 +110,8 @@ public class RayTracer {
 
                 // Actually inverse shadowing
                 double shadowing = scene.getShapes().stream()
-                        .filter(shape -> shape != intersection.getShape())
                         .flatMap(shape -> shape.intersections(lineToLightSource).stream())
-                        .filter(l -> l.getDistance() > 0 && l.getDistance() < d)
+                        .filter(l -> l.getDistance() > 0.0001 && l.getDistance() < d)
                         .mapToDouble(l -> 0d /* opacity */)
                         .reduce(1.0, (s, o) -> s*o);
 

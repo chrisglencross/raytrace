@@ -28,7 +28,7 @@ public class Plane implements Shape {
     public List<LineShapeIntersection> intersections(Line line) {
         double numerator = surfaceNormal.dotProduct(pointOnPlane.minus(line.getOrigin()));
         double denominator = surfaceNormal.dotProduct(line.getDirection());
-        if (denominator == 0) {
+        if (Math.abs(denominator) < 0.0001) {
             return Collections.emptyList();
         }
         double distance = numerator / denominator;

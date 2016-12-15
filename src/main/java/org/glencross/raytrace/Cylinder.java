@@ -1,5 +1,6 @@
 package org.glencross.raytrace;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,8 @@ public class Cylinder implements Shape {
     private final BoundingBox boundingBox;
     private final Matrix rotationMatrix;
     private final Matrix inverseRotationMatrix;
+    private final Circle baseCircle;
+    private final Circle topCircle;
 
 
     public Cylinder(Vector base, Vector direction, double radius, double height,
@@ -30,18 +33,10 @@ public class Cylinder implements Shape {
         this.radius = radius;
         this.height = height;
         this.surfaceProperties = surfaceProperties;
-//        Vector top = base.plus(direction.mult(height));
-//        this.boundingBox = new BoundingBox(
-//                new Vector(
-//                        Math.min(base.getX(), top.getX()) - radius,
-//                        Math.min(base.getY(), top.getY()) - radius,
-//                        Math.min(base.getZ(), top.getZ()) - radius
-//                ), new Vector(
-//                Math.max(base.getX(), top.getX()) + radius,
-//                Math.max(base.getY(), top.getY()) + radius,
-//                Math.max(base.getZ(), top.getZ()) + radius
-//        ));
-        boundingBox = null;
+
+        this.baseCircle = new Circle(base, direction, radius, surfaceProperties);
+        this.topCircle = new Circle(base.plus(direction.mult(height)), direction, radius, surfaceProperties);
+        boundingBox = baseCircle.getBoundingBox().combine(topCircle.getBoundingBox());
     }
 
     @Override
@@ -50,15 +45,11 @@ public class Cylinder implements Shape {
         Vector l = inverseRotationMatrix.multiply(line.getDirection());
         Vector o = inverseRotationMatrix.multiply(line.getOrigin().minus(this.base)).mult(1/radius);
 
-        // TODO - rotate, scale and translate the line to match the unit cylinder
-
         // a=xD2+yD2, b=2xExD+2yEyD, and c=xE2+yE2-1.
         double a = l.getX()*l.getX() +
                    l.getZ()*l.getZ();
-
         double b = 2*o.getX()*l.getX() +
                    2*o.getZ()*l.getZ();
-
         double c = o.getX()*o.getX() +
                    o.getZ()*o.getZ() - 1;
 
@@ -70,16 +61,24 @@ public class Cylinder implements Shape {
         double t1 = (-b+s)/(2*a);
         double t2 = (-b-s)/(2*a);
 
-        return DoubleStream.of(t1, t2)
+        List<LineShapeIntersection> cylinderSideIntersections = DoubleStream.of(t1, t2)
                 .mapToObj(distance -> {
                     Vector location = rotationMatrix.multiply(o.plus(l.mult(distance)).mult(radius)).plus(this.base);
                     // the surface normal isn't right
                     Vector surfaceNormal = rotationMatrix.multiply(location.minus(new Vector(0, location.getY(), 0)));
                     return new LineShapeIntersection(line, this, distance, location, surfaceNormal, surfaceProperties);
                 })
-                // TODO - rotate, scale and translate the line back the other way
+                .filter(i -> {
+                    double h = i.getLocation().minus(this.base).dotProduct(this.direction);
+                    return (h >= 0 && h < height);
+                })
                 .collect(Collectors.toList());
 
+        List<LineShapeIntersection> result = new ArrayList<>();
+        result.addAll(cylinderSideIntersections);
+        result.addAll(topCircle.intersections(line));
+        result.addAll(baseCircle.intersections(line));
+        return result;
     }
 
     @Override

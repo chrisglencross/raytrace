@@ -40,7 +40,7 @@ public class TeapotPicture {
         builder.setFogFactor(0.05);
         Scene scene = builder.createScene();
 
-        RayTracer rayTracer = new RayTracer(scene, 800, 600);
+        RayTracer rayTracer = new RayTracer(scene, 1600, 1200);
         RenderedImage image = rayTracer.render();
         ImageIO.write(image, "JPEG", new File("teapot.jpg"));
 

@@ -12,7 +12,6 @@ public class Matrix {
         );
     }
 
-
     public static Matrix rotateAroundXAxis(double radians) {
         double cos = Math.cos(-radians);
         double sin = Math.sin(-radians);
@@ -23,9 +22,34 @@ public class Matrix {
         );
     }
 
-    public static void main(String[] args) {
-        Vector v = new Vector(0, 1, 1);
-        System.out.println(rotateAroundYAxis(Math.toRadians(10)).multiply(v));
+    /**
+     * Creates a rotation matrix that is able to rotate from one vector to another vector.
+     *
+     * From https://math.stackexchange.com/questions/293116/rotating-one-3d-vector-to-another
+     */
+    public static Matrix getRotationMatrix(Vector fromVector, Vector toVector) {
+        Vector x = fromVector.crossProduct(toVector).toUnit();
+        double theta = Math.acos(fromVector.dotProduct(toVector));
+        if (theta <= 0.0001) {
+            return Matrix.identity();
+        }
+        Matrix matrixA = new Matrix(
+                0,          -x.getZ(),  x.getY(),
+                x.getZ(),   0,          -x.getX(),
+                -x.getY(),  x.getX(),   0
+        );
+        return Matrix.identity()
+                .plus(matrixA.multiply(Math.sin(theta)))
+                .plus(matrixA.multiply(matrixA).multiply(1-Math.cos(theta)));
+    }
+
+
+    public static Matrix identity() {
+            return new Matrix(
+                    1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1
+            );
     }
 
     private final double x1;
@@ -57,6 +81,35 @@ public class Matrix {
                 x1*vector.getX()+x2*vector.getY()+x3*vector.getZ(),
                 y1*vector.getX()+y2*vector.getY()+y3*vector.getZ(),
                 z1*vector.getX()+z2*vector.getY()+z3*vector.getZ());
+    }
+
+    public String toString() {
+        return String.format("(%f, %f, %f)\n(%f, %f, %f)\n(%f, %f, %f)",
+                new Object[] {x1, x2, x3, y1, y2, y3, z1, z2, z3});
+    }
+
+    public Matrix multiply(Matrix o) {
+        return new Matrix(
+                x1*o.x1+x2*o.y1+x3*o.z1, x1*o.x2+x2*o.y2+x3*o.z2, x1*o.x3+x2*o.y3+x3*o.z3,
+                y1*o.x1+y2*o.y1+y3*o.z1, y1*o.x2+y2*o.y2+y3*o.z2, y1*o.x3+y2*o.y3+y3*o.z3,
+                z1*o.x1+z2*o.y1+z3*o.z1, z1*o.x2+z2*o.y2+z3*o.z2, z1*o.x3+z2*o.y3+z3*o.z3
+        );
+    }
+
+    public Matrix multiply(double v) {
+        return new Matrix(
+                x1*v, x2*v, x3*v,
+                y1*v, y2*v, y3*v,
+                z1*v, z2*v, z3*v
+        );
+    }
+
+    public Matrix plus(Matrix o) {
+        return new Matrix(
+                x1+o.x1, x2+o.x2, x3+o.x3,
+                y1+o.y1, y2+o.y2, y3+o.y3,
+                z1+o.z1, z2+o.z2, z3+o.z3
+        );
     }
 
 }
