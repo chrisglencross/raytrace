@@ -117,6 +117,10 @@ public class RayTracer {
 
                 if (shadowing > 0) {
                     Colour lightSourceIllumination = lightSource.getColour().times(alignment).times(shadowing);
+                    // Inverse square law
+                    double distanceFactor = (distance.scale()/lightSource.getBrightness());
+                    lightSourceIllumination = lightSourceIllumination.times(1/(distanceFactor*distanceFactor));
+
                     lightSourceIllumination = applyFog(d, lightSourceIllumination);
                     illumination = illumination.add(lightSourceIllumination);
                 }

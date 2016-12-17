@@ -14,6 +14,8 @@ public class ChristmasTreePicture {
     public static void main(String[] args) throws IOException {
 
         List<LightSource> lightSources = new ArrayList<>();
+        lightSources.add(new LightSource(Colour.WHITE, new Vector(-2, 0.1, -2), 1.5));
+        lightSources.add(new LightSource(Colour.WHITE, new Vector( 2, 0.1, -2), 1.5));
 
         List<Shape> shapes = new ArrayList<>();
         shapes.addAll(Arrays.asList(
@@ -23,21 +25,21 @@ public class ChristmasTreePicture {
                         new Vector(0, -1, 0).toUnit(),
                         1.5,
                         2.5,
-                        new Surface(Colour.DARK_GREEN, 0)),
+                        new Surface(Colour.DARK_GREEN, 0.3)),
                 // Pot
                 new Cone(
                         new Vector(0, -3 ,0),
                         new Vector(0, 1, 0).toUnit(),
                         0.7,
                         3.5,
-                        new Surface(Colour.BLUE, 0.4)),
+                        new Surface(Colour.BLUE, 1)),
                 // Trunk
                 new Cylinder(
                         new Vector(0, 0 ,0),
                         new Vector(0, 1, 0).toUnit(),
                         0.2,
                         1,
-                        new Surface(Colour.BROWN, 0)),
+                        new Surface(Colour.BROWN, 0.2)),
                 new ChequeredPlane(new Vector(0, 1, 0).toUnit(), 0,
                         new Surface(Colour.RED, 0.5),
                         new Surface(Colour.GREEN, 0.9),
@@ -47,7 +49,7 @@ public class ChristmasTreePicture {
         // Baubles and candles
         for (int i = 0; i < 200; i++) { // 200
             double h = (i*1.4582d) % 1d;
-            h = (1-(h*h))*2.4 + 0.1;
+            h = (1-(h*h))*2.4;
             double r = 0.02+(h/2.5)*1.5;
             double a = (i * 43d) % 360;
             double x = r * Math.cos(Math.toRadians(a));
@@ -63,14 +65,14 @@ public class ChristmasTreePicture {
                 case 2:
                 case 3:
                     shapes.add(new Sphere(
-                            new Vector(location.getX(), location.getY()+0.08, location.getZ()),
+                            new Vector(location.getX(), location.getY()+0.06, location.getZ()),
                             0.02, new Surface(Colour.LIGHT_YELLOW, 1)));
                     shapes.add(new Cylinder(
-                            new Vector(location.getX(), location.getY()-0.02, location.getZ()),
+                            new Vector(location.getX(), location.getY()-0.04, location.getZ()),
                             new Vector(0, 1, 0), 0.02, 0.08, new Surface(Colour.WHITE, 1))
                     );
-                    lightSources.add(new LightSource(new Colour(0.1, 0.1, 0.05),
-                            new Vector(location.getX(), location.getY()+0.105, location.getZ())));
+                    lightSources.add(new LightSource(Colour.LIGHT_YELLOW,
+                            new Vector(location.getX(), location.getY()+0.085, location.getZ()), 0.1));
                     break;
             }
         }
@@ -87,6 +89,7 @@ public class ChristmasTreePicture {
             shapes.add(new Sphere(location, 0.05, new Surface(Colour.WHITE, 1)));
         }
 
+        // Star
         shapes.add(new Triangle(new Vector(0, 3.4, -0.2), new Vector(-0.15, 3.7, -0.2), new Vector(0.15, 3.7, -0.2),
                 new Surface(Colour.LIGHT_YELLOW, 1)));
         shapes.add(new Triangle(new Vector(-0.15, 3.5, -0.2), new Vector(0, 3.8, -0.2), new Vector(0.15, 3.5, -0.2),

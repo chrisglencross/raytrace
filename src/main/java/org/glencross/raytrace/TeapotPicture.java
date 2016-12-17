@@ -18,8 +18,8 @@ public class TeapotPicture {
         builder.setViewerDirection(new Vector(0, -0.1, 1).toUnit());
         builder.setAmbientLight(new Colour(0.1, 0.1, 0.1));
         builder.setLightSources(Arrays.asList(
-                new LightSource( Colour.WHITE, new Vector(300, 300, -300)),
-                new LightSource( Colour.GREY, new Vector(-300, 300, -300))
+                new LightSource( Colour.WHITE, new Vector(300, 300, -300), 300),
+                new LightSource( Colour.GREY, new Vector(-300, 300, -300), 300)
                 ));
 
         List<Shape> teapotComponents = WavefrontLoader.load(
