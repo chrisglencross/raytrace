@@ -66,7 +66,7 @@ public class RayTracer {
         Colour colour = scene.getAmbientLight();
         if (optionalIntersection.isPresent()) {
             LineShapeIntersection intersection = optionalIntersection.get();
-            Colour ambientIllumination = getAmbientIllumination(intersection);
+            Colour ambientIllumination = getLightSourceIllumination(intersection);
             Colour reflectedIllumination = getReflectedIllumination(intersection, depthRemaining);
             Colour surfaceColour = intersection.getSurfaceProperties().getColour();
             colour = ambientIllumination.add(reflectedIllumination).times(surfaceColour);
@@ -83,8 +83,7 @@ public class RayTracer {
             Vector surfaceNormal = intersection.getSurfaceNormal();
             Vector lineDirection = intersection.getLine().getDirection();
             Vector reflectionDirection = getReflectionDirection(surfaceNormal, lineDirection);
-
-            Line reflectionLine = new Line(intersection.getLocation(), reflectionDirection);
+            Line reflectionLine = new Line(intersection.getLocation().plus(reflectionDirection.mult(0.0001)), reflectionDirection);
             reflectedIllumination = getColourOfLine(intersection.getShape(), reflectionLine, depthRemaining - 1)
                     .times(reflectivity);
         }
@@ -99,19 +98,20 @@ public class RayTracer {
         return lineDirection.minus(surfaceNormal.mult(2*(lineDirection.dotProduct(surfaceNormal))));
     }
 
-    private Colour getAmbientIllumination(LineShapeIntersection intersection) {
+    private Colour getLightSourceIllumination(LineShapeIntersection intersection) {
         Colour illumination = scene.getAmbientLight();
         for (LightSource lightSource : scene.getLightSources()) {
             Vector distance = lightSource.getLocation().minus(intersection.getLocation());
             double alignment = distance.toUnit().dotProduct(intersection.getSurfaceNormal());
             if (alignment > 0) {
                 double d = distance.scale();
-                Line lineToLightSource = new Line(intersection.getLocation(), distance);
+                Vector direction = distance.toUnit();
+                Line lineToLightSource = new Line(intersection.getLocation().plus(direction.mult(0.0001)), direction);
 
                 // Actually inverse shadowing
                 double shadowing = scene.getShapes().stream()
                         .flatMap(shape -> shape.intersections(lineToLightSource).stream())
-                        .filter(l -> l.getDistance() > 0.0001 && l.getDistance() < d)
+                        .filter(l -> l.getDistance() > 0 && l.getDistance() < d)
                         .mapToDouble(l -> 0d /* opacity */)
                         .reduce(1.0, (s, o) -> s*o);
 

@@ -16,8 +16,8 @@ public class CylinderPicture {
         builder.setViewerDirection(new Vector(0, -0.3, 1).toUnit());
         builder.setAmbientLight(new Colour(0.1, 0.1, 0.1));
         builder.setLightSources(Arrays.asList(
-                new LightSource( Colour.WHITE, new Vector(300, 300, -300), new Vector(-1, -1, 1).toUnit()),
-                new LightSource( Colour.WHITE, new Vector(-300, 300, -300), new Vector(1, -1, 1).toUnit())
+                new LightSource( Colour.WHITE, new Vector(300, 300, -300)),
+                new LightSource( Colour.WHITE, new Vector(-300, 300, -300))
                 ));
         builder.setShapes(Arrays.asList(
                 new Cylinder(
@@ -26,6 +26,18 @@ public class CylinderPicture {
                         1,
                         1,
                         new Surface(Colour.WHITE, 0.9)),
+                new Cone(
+                        new Vector(0, 2 ,0),
+                        new Vector(0.5, 1, -0.2).toUnit(),
+                        1,
+                        1,
+                        new Surface(Colour.YELLOW, 0.9)),
+                new Cylinder(
+                        new Vector(0, 2 ,0).plus(new Vector(0.5, 1, -0.2).toUnit()),
+                        new Vector(0.5, 1, -0.2).toUnit(),
+                        0.5,
+                        2,
+                        new Surface(Colour.YELLOW, 0.9)),
                 new Sphere(
                         new Vector(-1.5, 1, -1.5),
                         1,

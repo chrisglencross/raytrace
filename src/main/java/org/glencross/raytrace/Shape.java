@@ -7,7 +7,7 @@ public interface Shape {
     List<LineShapeIntersection> intersections(Line line);
 
     default BoundingBox getBoundingBox() {
-        return null;
+        return BoundingBox.INFINITE;
     }
 
 }

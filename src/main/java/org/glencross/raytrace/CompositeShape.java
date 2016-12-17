@@ -21,7 +21,7 @@ public class CompositeShape implements Shape {
                 .reduce(BoundingBox.NONE, BoundingBox::combine);
 
         Map<Boolean, List<Shape>> shapesByHasBoundingBox = shapes.stream()
-                .collect(Collectors.partitioningBy(s -> s.getBoundingBox() != null));
+                .collect(Collectors.partitioningBy(s -> !s.getBoundingBox().equals(BoundingBox.INFINITE)));
         topLevelComponents.addAll(shapesByHasBoundingBox.getOrDefault(Boolean.FALSE, Collections.emptyList()));
         shapes = shapesByHasBoundingBox.getOrDefault(Boolean.TRUE, Collections.emptyList());
 

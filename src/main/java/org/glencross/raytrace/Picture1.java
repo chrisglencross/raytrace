@@ -19,7 +19,7 @@ public class Picture1 {
         builder.setViewerDirection(new Vector(0, -0.1, 1).toUnit());
         builder.setAmbientLight(new Colour(0.5, 0.5, 0.5));
         builder.setLightSources(Arrays.asList(
-                new LightSource( Colour.WHITE, new Vector(300, 300, -300), new Vector(-1, -1, 1).toUnit())));
+                new LightSource( Colour.WHITE, new Vector(300, 300, -300))));
 
 
         CompositeShape pyramid = new CompositeShape(Arrays.asList(

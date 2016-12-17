@@ -12,6 +12,10 @@ public class Colour {
     public static final Colour BLUE = new Colour(0, 0, 1);
     public static final Colour CYAN = new Colour(0, 1, 1);
     public static final Colour MAGENTA = new Colour(1, 0, 1);
+    public static final Colour BROWN = new Colour(165d/256, 42d/256, 42d/256);
+    public static final Colour DARK_GREEN = new Colour(0, 0.7, 0);
+    public static final Colour LIGHT_YELLOW = new Colour(1, 1, 0.5);
+    public static final Colour DARK_BLUE = new Colour(0, 0, 0.5);
 
     private double r;
     private double g;
