@@ -2,8 +2,9 @@ package org.glencross.raytrace;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -36,7 +37,12 @@ public class RayTracer {
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
+        List<Long> rowTimes = new ArrayList<>();
+
         IntStream.range(0, height).forEach(y -> {
+
+            long rowStartTime = System.currentTimeMillis();
+
             Vector rowDirection = Matrix.rotateAroundXAxis(topAngle-y*pixelAngle).multiply(screenCentreDirection);
             IntStream.range(0, width).parallel().forEach(x -> {
                 Vector pixelDirection = Matrix.rotateAroundYAxis(leftAngle+x*pixelAngle).multiply(rowDirection).toUnit();
@@ -45,7 +51,16 @@ public class RayTracer {
                 int intColour = colour.toInt();
                 image.setRGB(x, y, intColour);
             });
-            System.out.println(new BigDecimal(100d*y/height).setScale(2, BigDecimal.ROUND_HALF_UP) + "%");
+
+            long rowEndTime = System.currentTimeMillis();
+            rowTimes.add(rowEndTime-rowStartTime);
+
+            double completed = ((double)y)/height;
+
+            List<Long> recentRows = rowTimes.size() > 10 ? rowTimes.subList(rowTimes.size()-10, rowTimes.size()) : rowTimes;
+            double averageRowTime = recentRows.stream().mapToLong(Long::longValue).average().getAsDouble();
+            long estimateRemaining = (long)(averageRowTime * (height-y));
+            System.out.println(String.format("%.2f%% (estimated %d seconds remaining)", 100d*completed, estimateRemaining/1000));
         });
 
 
@@ -105,25 +120,27 @@ public class RayTracer {
             double alignment = distance.toUnit().dotProduct(intersection.getSurfaceNormal());
             if (alignment > 0) {
                 double d = distance.scale();
-                Vector direction = distance.toUnit();
-                Line lineToLightSource = new Line(intersection.getLocation(), direction);
+                double distanceFactor = (d/lightSource.getBrightness());
+                double effectiveBrightness = 1/(distanceFactor*distanceFactor); // Inverse square law
+                if (effectiveBrightness > 1/256) { // If the light would be too dim, don't bother
+                    Vector direction = distance.toUnit();
+                    Line lineToLightSource = new Line(intersection.getLocation(), direction);
 
-                // Actually inverse shadowing
-                double shadowing = scene.getShapes().stream()
-                        .flatMap(shape -> shape.intersections(lineToLightSource).stream())
-                        .filter(i -> i.getShape() != intersection.getShape())
-                        .filter(l -> l.getDistance() > 0 && l.getDistance() < d)
-                        .mapToDouble(l -> 0d /* opacity */)
-                        .reduce(1.0, (s, o) -> s*o);
+                    // Actually inverse shadowing
+                    double shadowing = scene.getShapes().stream()
+                            .flatMap(shape -> shape.intersections(lineToLightSource).stream())
+                            .filter(i -> i.getShape() != intersection.getShape())
+                            .filter(l -> l.getDistance() > 0 && l.getDistance() < d)
+                            .mapToDouble(l -> 0d /* opacity */)
+                            .reduce(1.0, (s, o) -> s * o);
 
-                if (shadowing > 0) {
-                    Colour lightSourceIllumination = lightSource.getColour().times(alignment).times(shadowing);
-                    // Inverse square law
-                    double distanceFactor = (distance.scale()/lightSource.getBrightness());
-                    lightSourceIllumination = lightSourceIllumination.times(1/(distanceFactor*distanceFactor));
+                    if (shadowing > 0) {
+                        Colour lightSourceIllumination = lightSource.getColour().times(alignment).times(shadowing);
+                        lightSourceIllumination = lightSourceIllumination.times(effectiveBrightness);
 
-                    lightSourceIllumination = applyFog(d, lightSourceIllumination);
-                    illumination = illumination.add(lightSourceIllumination);
+                        lightSourceIllumination = applyFog(d, lightSourceIllumination);
+                        illumination = illumination.add(lightSourceIllumination);
+                    }
                 }
             }
         }

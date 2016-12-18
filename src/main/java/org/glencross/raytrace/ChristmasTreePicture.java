@@ -47,7 +47,7 @@ public class ChristmasTreePicture {
                 )));
 
         // Baubles and candles
-        for (int i = 0; i < 200; i++) { // 200
+        for (int i = 0; i < 200; i++) {
             double h = (i*1.4582d) % 1d;
             h = (1-(h*h))*2.4;
             double r = 0.02+(h/2.5)*1.5;
@@ -94,6 +94,8 @@ public class ChristmasTreePicture {
                 new Surface(Colour.LIGHT_YELLOW, 1)));
         shapes.add(new Triangle(new Vector(-0.15, 3.5, -0.2), new Vector(0, 3.8, -0.2), new Vector(0.15, 3.5, -0.2),
                 new Surface(Colour.LIGHT_YELLOW, 1)));
+        lightSources.add(new LightSource(Colour.WHITE,
+                new Vector(0, 3.6, -0.3), 0.1));
 
         SceneBuilder builder = new SceneBuilder();
         builder.setViewerLocation(new Vector(0, 1.5, -4));
