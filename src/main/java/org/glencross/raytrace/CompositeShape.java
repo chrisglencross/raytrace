@@ -126,8 +126,6 @@ public class CompositeShape implements Shape {
         collectShapesByBoundingBox(line, shapes);
         return shapes.stream()
                 .flatMap(s -> s.intersections(line).stream())
-                .map(i -> new LineShapeIntersection(line, this,  i.getDistance(), i.getLocation(),
-                        i.getSurfaceNormal(), i.getSurfaceProperties()))
                 .collect(Collectors.toList());
     }
 

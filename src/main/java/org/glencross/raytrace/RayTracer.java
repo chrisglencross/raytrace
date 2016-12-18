@@ -58,8 +58,8 @@ public class RayTracer {
 
     private Colour getColourOfLine(Shape fromShape, Line line, int depthRemaining) {
         Optional<LineShapeIntersection> optionalIntersection = scene.getShapes().stream()
-                .filter(shape -> shape != fromShape)
                 .flatMap(shape -> shape.intersections(line).stream())
+                .filter(i -> i.getShape() != fromShape)
                 .filter(i -> i.getDistance() > 0)
                 .sorted(Comparator.comparing(LineShapeIntersection::getDistance))
                 .findFirst();
@@ -83,7 +83,7 @@ public class RayTracer {
             Vector surfaceNormal = intersection.getSurfaceNormal();
             Vector lineDirection = intersection.getLine().getDirection();
             Vector reflectionDirection = getReflectionDirection(surfaceNormal, lineDirection);
-            Line reflectionLine = new Line(intersection.getLocation().plus(reflectionDirection.mult(0.0001)), reflectionDirection);
+            Line reflectionLine = new Line(intersection.getLocation(), reflectionDirection);
             reflectedIllumination = getColourOfLine(intersection.getShape(), reflectionLine, depthRemaining - 1)
                     .times(reflectivity);
         }
@@ -106,11 +106,12 @@ public class RayTracer {
             if (alignment > 0) {
                 double d = distance.scale();
                 Vector direction = distance.toUnit();
-                Line lineToLightSource = new Line(intersection.getLocation().plus(direction.mult(0.0001)), direction);
+                Line lineToLightSource = new Line(intersection.getLocation(), direction);
 
                 // Actually inverse shadowing
                 double shadowing = scene.getShapes().stream()
                         .flatMap(shape -> shape.intersections(lineToLightSource).stream())
+                        .filter(i -> i.getShape() != intersection.getShape())
                         .filter(l -> l.getDistance() > 0 && l.getDistance() < d)
                         .mapToDouble(l -> 0d /* opacity */)
                         .reduce(1.0, (s, o) -> s*o);
