@@ -1,15 +1,17 @@
 package org.glencross.raytrace;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SceneBuilder {
-    private Vector viewerLocation;
-    private Vector viewerDirection;
-    private double distanceFromScreen;
-    private Colour ambientLight;
-    private List<LightSource> lightSources;
-    private List<Shape> shapes;
-    private double fogFactor;
+    private Vector viewerLocation = new Vector(0, 1, -1);
+    private Vector viewerDirection = new Vector(0, 0, 1);
+    private Vector topOfScreenDirection = new Vector(0, 1, 0);
+    private double horizontalFieldOfViewDegrees = 60d;
+    private Colour ambientLight = Colour.BLACK;
+    private List<LightSource> lightSources = Collections.emptyList();
+    private List<Shape> shapes = Collections.emptyList();
+    private double fogFactor = 0.05d;
 
     public SceneBuilder setViewerLocation(Vector viewerLocation) {
         this.viewerLocation = viewerLocation;
@@ -21,8 +23,13 @@ public class SceneBuilder {
         return this;
     }
 
-    public SceneBuilder setDistanceFromScreen(double distanceFromScreen) {
-        this.distanceFromScreen = distanceFromScreen;
+    public SceneBuilder setTopOfScreenDirection(Vector topOfScreenDirection) {
+        this.topOfScreenDirection = topOfScreenDirection;
+        return this;
+    }
+
+    public SceneBuilder setHorizontalFieldOfViewDegrees(double horizontalFieldOfViewDegrees) {
+        this.horizontalFieldOfViewDegrees = horizontalFieldOfViewDegrees;
         return this;
     }
 
@@ -47,6 +54,7 @@ public class SceneBuilder {
     }
 
     public Scene createScene() {
-        return new Scene(viewerLocation, viewerDirection, distanceFromScreen, ambientLight, lightSources, shapes, fogFactor);
+        return new Scene(viewerLocation, viewerDirection, topOfScreenDirection, horizontalFieldOfViewDegrees,
+                ambientLight, lightSources, shapes, fogFactor);
     }
 }

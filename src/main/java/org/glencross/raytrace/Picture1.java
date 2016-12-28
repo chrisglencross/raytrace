@@ -15,13 +15,13 @@ public class Picture1 {
 
         SceneBuilder builder = new SceneBuilder();
         builder.setViewerLocation(new Vector(0, 100, -800));
-        builder.setDistanceFromScreen(300);
         builder.setViewerDirection(new Vector(0, -0.1, 1).toUnit());
         builder.setAmbientLight(new Colour(0.5, 0.5, 0.5));
         builder.setLightSources(Arrays.asList(
                 new LightSource( Colour.WHITE, new Vector(300, 300, -300), 300)));
 
 
+        builder.setTopOfScreenDirection(new Vector(0.2, 1, 0).toUnit());
         CompositeShape pyramid = new CompositeShape(Arrays.asList(
                 new Triangle(new Vector(-600, -200, 450), new Vector(0, -200, 450), new Vector(-200, 200, 350),
                         new Surface(Colour.RED, 0.6)),

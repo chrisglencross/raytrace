@@ -14,7 +14,6 @@ public class TeapotPicture {
 
         SceneBuilder builder = new SceneBuilder();
         builder.setViewerLocation(new Vector(0, 300, -800));
-        builder.setDistanceFromScreen(300);
         builder.setViewerDirection(new Vector(0, -0.1, 1).toUnit());
         builder.setAmbientLight(new Colour(0.1, 0.1, 0.1));
         builder.setLightSources(Arrays.asList(

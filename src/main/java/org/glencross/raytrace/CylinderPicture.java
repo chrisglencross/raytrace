@@ -12,7 +12,6 @@ public class CylinderPicture {
 
         SceneBuilder builder = new SceneBuilder();
         builder.setViewerLocation(new Vector(0, 2, -4));
-        builder.setDistanceFromScreen(2);
         builder.setViewerDirection(new Vector(0, -0.3, 1).toUnit());
         builder.setAmbientLight(new Colour(0.1, 0.1, 0.1));
         builder.setLightSources(Arrays.asList(

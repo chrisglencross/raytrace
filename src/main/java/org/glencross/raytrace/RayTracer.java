@@ -27,13 +27,16 @@ public class RayTracer {
 
         long startTimeMillis = System.currentTimeMillis();
 
-        double horizontalFieldOfViewDegrees = 60; // Could make this a property of the scene?
+        double horizontalFieldOfViewDegrees = scene.getHorizontalFieldOfViewDegrees();
         double verticalFieldOfViewDegrees = horizontalFieldOfViewDegrees / width * height;
 
         Vector screenCentreDirection = scene.getViewerDirection();
         double topAngle = Math.toRadians(verticalFieldOfViewDegrees/2);
         double leftAngle = Math.toRadians(-horizontalFieldOfViewDegrees/2);
         double pixelAngle = Math.toRadians(verticalFieldOfViewDegrees/height);
+
+        Vector rightOfScreenVector = scene.getTopOfScreenDirection().crossProduct(scene.getViewerDirection()).toUnit();
+        Vector bottomOfScreenVector = rightOfScreenVector.crossProduct(scene.getViewerDirection()).toUnit();
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
@@ -42,10 +45,9 @@ public class RayTracer {
         IntStream.range(0, height).forEach(y -> {
 
             long rowStartTime = System.currentTimeMillis();
-
-            Vector rowDirection = Matrix.rotateAroundXAxis(topAngle-y*pixelAngle).multiply(screenCentreDirection);
+            Vector rowDirection = Matrix.rotateAroundVector(rightOfScreenVector, topAngle-y*pixelAngle).multiply(screenCentreDirection);
             IntStream.range(0, width).parallel().forEach(x -> {
-                Vector pixelDirection = Matrix.rotateAroundYAxis(leftAngle+x*pixelAngle).multiply(rowDirection).toUnit();
+                Vector pixelDirection = Matrix.rotateAroundVector(bottomOfScreenVector, leftAngle+x*pixelAngle).multiply(rowDirection).toUnit();
                 Line line = new Line(scene.getViewerLocation(), pixelDirection);
                 Colour colour = getColourOfLine(null, line, 5);
                 int intColour = colour.toInt();

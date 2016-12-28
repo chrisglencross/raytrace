@@ -6,19 +6,21 @@ public class Scene {
 
     private final Vector viewerLocation;
     private final Vector viewerDirection;
-    private final double distanceFromScreen;
+    private final Vector topOfScreenDirection;
+    private final double horizontalFieldOfViewDegrees;
 
     private final Colour ambientLight;
     private final List<LightSource> lightSources;
     private final List<Shape> shapes;
     private final double fogFactor;
 
-    public Scene(Vector viewerLocation, Vector viewerDirection, double distanceFromScreen,
-                 Colour ambientLight, List<LightSource> lightSources, List<Shape> shapes,
+    public Scene(Vector viewerLocation, Vector viewerDirection, Vector topOfScreenDirection,
+                 double horizontalFieldOfViewDegrees, Colour ambientLight, List<LightSource> lightSources, List<Shape> shapes,
                  double fogFactor) {
         this.viewerLocation = viewerLocation;
         this.viewerDirection = viewerDirection;
-        this.distanceFromScreen = distanceFromScreen;
+        this.topOfScreenDirection = topOfScreenDirection;
+        this.horizontalFieldOfViewDegrees = horizontalFieldOfViewDegrees;
         this.ambientLight = ambientLight;
         this.lightSources = lightSources;
         this.shapes = shapes;
@@ -33,8 +35,16 @@ public class Scene {
         return viewerDirection;
     }
 
-    public double getDistanceFromScreen() {
-        return distanceFromScreen;
+    public Vector getTopOfScreenDirection() {
+        return topOfScreenDirection;
+    }
+
+    public double getHorizontalFieldOfViewDegrees() {
+        return horizontalFieldOfViewDegrees;
+    }
+
+    public Colour getAmbientLight() {
+        return ambientLight;
     }
 
     public List<LightSource> getLightSources() {
@@ -43,10 +53,6 @@ public class Scene {
 
     public List<Shape> getShapes() {
         return shapes;
-    }
-
-    public Colour getAmbientLight() {
-        return ambientLight;
     }
 
     public double getFogFactor() {

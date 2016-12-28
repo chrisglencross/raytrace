@@ -13,6 +13,16 @@ public class ChristmasTreePicture {
 
     public static void main(String[] args) throws IOException {
 
+        SceneBuilder builder = getSceneBuilder();
+        Scene scene = builder.createScene();
+
+        RayTracer rayTracer = new RayTracer(scene, 1080, 1440);
+        RenderedImage image = rayTracer.render();
+        ImageIO.write(image, "PNG", new File("christmas.png"));
+
+    }
+
+    public static SceneBuilder getSceneBuilder() {
         List<LightSource> lightSources = new ArrayList<>();
         lightSources.add(new LightSource(Colour.WHITE, new Vector(-2, 0.1, -2), 1.5));
         lightSources.add(new LightSource(Colour.WHITE, new Vector( 2, 0.1, -2), 1.5));
@@ -97,20 +107,17 @@ public class ChristmasTreePicture {
         lightSources.add(new LightSource(Colour.WHITE,
                 new Vector(0, 3.6, -0.3), 0.1));
 
+        // A bauble behind us!
+        shapes.add(new Sphere(new Vector(0, 1.6, -5), 0.5, new Surface(Colour.RED, 1)));
+
         SceneBuilder builder = new SceneBuilder();
         builder.setViewerLocation(new Vector(0, 1.5, -4));
-        builder.setDistanceFromScreen(2);
         builder.setViewerDirection(new Vector(0, -0.1, 1).toUnit());
         builder.setAmbientLight(Colour.BLACK);
         builder.setLightSources(lightSources);
         builder.setShapes(Collections.singletonList(new CompositeShape(shapes)));
         builder.setFogFactor(0.01);
-        Scene scene = builder.createScene();
-
-        RayTracer rayTracer = new RayTracer(scene, 1080, 1440);
-        RenderedImage image = rayTracer.render();
-        ImageIO.write(image, "PNG", new File("christmas.png"));
-
+        return builder;
     }
 
 
